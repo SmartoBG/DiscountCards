@@ -1,0 +1,51 @@
+Loyalty cards task
+
+The Main class is the entry point.
+
+3 discount cards are created of class DiscountCard while initiating them with their respective subclasses and passing only the cardOwner(the field is not used in the program but it is in the requirements).
+
+	Then using the PayDesk class and the static method checkout() we pass the 3 test cases to the program and output the result to the console(‘-----’  printed for better readability from the user).
+
+	
+
+DiscountCard class
+
+	We use only private fields to ensure encapsulation, providing getters and setters for the fields necessary. As per requirement we have cardOwner, previousMonthTurnover and initialDiscount fields because each card should store that info. previousMonthTurnover seems redundant, because business logic would suggest that the turnover is passed to the system every time the calculation of discount is made, as it is not a constant. We’re keeping the requirement nevertheless. 
+
+	cardType field is provided to store this info even though it’s not required. It helps for keeping open/close principle.
+
+	We add a private default constructor so we don’t allow other methods or classes to create more types of discount cards. Only the predefined constructor that takes ownerName as argument is accessible.
+
+The addedTurnoverDiscountRate() simply updates the previousMonthTurnover field and then calls the calculateAddedTurnoverDiscountRate() to calculate the final discount. The sole purpose of this method is to ensure the previousMonthTurnover is up to date every time the discount is calculated.
+
+	We will not discuss getters and setters as they are very self explanatory.
+
+	The class implements the Discountable interface.
+
+
+Discountable interface
+
+It holds one method - calculateAddedTurnoverDiscountRate that needs to be overridden by the subclasses of DiscountCard(which is an abstract class and doesn’t have to implement the abstract method). 
+
+It also holds an enum with the types of cards. Those constants also hold the info about the initial discount % of every type of card.
+
+Using the interface allows to keep all the constants and logic for the discounts of the cards in one place, thus keeping the single responsibility principle. 
+
+The DiscountCard deals only with creating cards and leaves discount calculation to the interface and it’s implementation in the subclasses.
+
+
+Subclasses
+
+	The Bronze, Silver and Gold classes implement the calculateAddedTurnoverDiscountRate() method and with it the individual logic of every card’s discounts. 
+	We also specify each card’s type and add the initial discount within the shadowed default constructor.
+  The gold card implements a more complex method of calculation of turnover discount. We use a MAX_DISCOUNT_RATE constant to ensure that even if the initial discount for the gold card is changed the maximum discount rate would still be 10%. Again open/closed principle. 
+
+
+PayDesk class.
+
+	The class has 2 methods:
+
+	discountRateCalculation() is where the polymorphism happens. The class takes the generic class instance discountCard and calculates the finalDiscountRate by summing the results of the getInitialDsicountRate and addedTurnoverDiscountRate methods used on the object. 
+
+	It keeps the logic of how the PayDesk calculates all the discounts (summing initial and added discounts) separate from the discount logic of the cards themselves.
+
